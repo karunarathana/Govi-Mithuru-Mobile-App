@@ -1,11 +1,11 @@
-import SelectRoleView from "@/pages/Sologon/SelectRoleView";
-
+import CreateAccView from "@/pages/login/CreateAccView";
+import React from 'react';
+import { View } from 'react-native';
 
 export default function HomeScreen() {
   return (
-   <>
-    {/* <WelcomView/> */}
-    <SelectRoleView/>
-   </>
+    <View style={{ flex: 1 }}>
+      <CreateAccView/>
+    </View>
   );
 }
