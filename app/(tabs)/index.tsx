@@ -1,3 +1,4 @@
+import AdminDashboard from "@/pages/admin/AdminDashboard";
 import CustomerDash from "@/pages/customer/CustomerDash";
 import LoginView from "@/pages/login/LoginView";
 import OnboardingScreen from "@/pages/Sologon/OnboardingScreen";
@@ -11,6 +12,7 @@ export default function HomeScreen() {
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen name="CustomerDash" component={CustomerDash} />
         <Stack.Screen name="LoginView" component={LoginView} />
+        <Stack.Screen name="AdminView" component={AdminDashboard} />
       </Stack.Navigator>
   );
 }
