@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AddFoodView from "./adminPage/AddFoodView";
 import AdminHome from "./adminPage/AdminHome";
+import MembersMessaging from "./adminPage/MembersMessaging";
 
 export default function AdminDashboard() {
   const Tab = createBottomTabNavigator();
@@ -25,7 +26,9 @@ export default function AdminDashboard() {
  
      function SettingsScreen() {
          return (
-            <></>
+            <>
+            <MembersMessaging/>
+            </>
          );
      }
  

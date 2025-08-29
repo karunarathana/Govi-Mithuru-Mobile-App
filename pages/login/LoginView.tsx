@@ -1,5 +1,4 @@
 import { Picker } from "@react-native-picker/picker";
-import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
   Image,
@@ -16,29 +15,21 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// Typing for navigation
-
-export default function LoginView() {
-  const navigation = useNavigation();
-
+export default function LoginView({ navigation }: any) {
   const [role, setRole] = useState<string>("farmer");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
-  // Temporary API call simulation
   const sendLoginRequest = async () => {
     if (!email || !password) {
       alert("Please enter email and password!");
       return;
     }
-
     try {
-      // Example: replace this with your axios API call
       // const response = await loginAPI({ role, email, password });
       // if (response.status === "success") { navigation.replace("CustomerDash"); }
-
-      console.log({ role, email, password, isChecked });
+      // console.log({ role, email, password, isChecked });
       // navigation.replace("CustomerDash");
     } catch (error) {
       console.error(error);
@@ -60,7 +51,8 @@ export default function LoginView() {
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             {/* Header */}
             <View style={styles.customeHeaderFlex}>
-              <Text>Back</Text>
+              <Image style={styles.backImage}
+                source={require('../../assets/previous.png')} />
               <Text style={styles.firstHeaderCusText}>Welcome Back 👏</Text>
               <Text style={styles.seccondHeaderCusText}>
                 This is #Govi Mithuru Mobile App
@@ -129,7 +121,9 @@ export default function LoginView() {
                 <Text>Or Sign in with</Text>
               </View>
 
-              <TouchableOpacity style={styles.customButton}>
+              <TouchableOpacity style={styles.customButton}
+                onPress={() => navigation.navigate("CreateAccount")}
+              >
                 <View style={styles.customButtonSubWrapper}>
                   <Image
                     style={styles.iconImage}
@@ -170,5 +164,10 @@ const styles = StyleSheet.create({
   picker: { height: 50, width: "100%" },
   customFooterSologon: { fontSize: 15, fontWeight: "bold", color: "grey", textAlign: "center" },
   customFooterColorChange: { color: "green" },
-  background: { flex: 1 }
+  background: { flex: 1 },
+  backImage: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
+  },
 });
