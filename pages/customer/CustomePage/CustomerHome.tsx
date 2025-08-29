@@ -32,7 +32,7 @@ export default function CustomerHome() {
               />
             </View>
             <View style={styles.customSearchIcon}>
-              <Feather name="check" size={25} color="#888" />
+              <Feather name="menu" size={25} color="#888" />
             </View>
           </View>
           <View style={{ marginTop: 15 }}>
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 2,
     borderColor: "green",
-    borderRadius: 1000,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center'
   },

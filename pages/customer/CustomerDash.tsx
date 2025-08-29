@@ -1,7 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Text, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import ChatScreen from "./CustomePage/ChatScreen";
 import CustomerHome from "./CustomePage/CustomerHome";
+import CustomerProfile from "./CustomePage/CustomerProfile";
 
 export default function CustomerDash() {
     const Tab = createBottomTabNavigator();
@@ -14,17 +16,15 @@ export default function CustomerDash() {
 
     function ProfileScreen() {
         return (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ fontSize: 20 }}>👤 Profile Screen</Text>
-            </View>
+            <>
+            <CustomerProfile/>
+            </>
         );
     }
 
     function SettingsScreen() {
         return (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ fontSize: 20 }}>⚙️ Settings Screen</Text>
-            </View>
+            <ChatScreen/>
         );
     }
 
@@ -77,7 +77,7 @@ export default function CustomerDash() {
                 })}
             >
                 <Tab.Screen name="Home" component={HomeScreen} />
-                <Tab.Screen name="Profile" component={ProfileScreen} />
+                <Tab.Screen name="Predit" component={ProfileScreen} />
                 <Tab.Screen name="Mail" component={MailScreen} />
                 <Tab.Screen name="Settings" component={SettingsScreen} />
             </Tab.Navigator>

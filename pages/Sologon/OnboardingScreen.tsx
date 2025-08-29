@@ -59,7 +59,7 @@ export default function OnboardingScreen({ navigation }: any) {
           ) : (
             <TouchableOpacity
               style={styles.nextBtn}
-              onPress={() => navigation.navigate("CustomerDash")}
+              onPress={() => navigation.navigate("SelectRoleView")}
             >
               <Text style={styles.nextText}>Get Started</Text>
             </TouchableOpacity>
