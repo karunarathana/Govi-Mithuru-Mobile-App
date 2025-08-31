@@ -17,12 +17,14 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginView({ navigation }: any) {
-  const [role, setRole] = useState<string>("farmer");
-  const [email, setEmail] = useState<string>("admin@gmail.com");
-  const [password, setPassword] = useState<string>("123");
+  const [role, setRole] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const sendLoginRequest = async () => {
+    console.log(email,password);
+    
     if (!email || !password) {
       alert("Please enter email and password!");
       return;
