@@ -1,7 +1,9 @@
-const BASE_URL = "http://10.0.2.2:8080/api";
+const BASE_URL = "http://172.29.218.10:8082/api/com-test";
 
 export const API_ENDPOINTS = {
-  LOGIN: `${BASE_URL}/auth/login`,
-  REGISTER: `${BASE_URL}/auth/register`,
+  LOGIN: `${BASE_URL}/login-user`,
+  REGISTER: `${BASE_URL}/create-user`,
   USERS: `${BASE_URL}/users`,
+
+  CREATE_NEW_PRODUCT: `${BASE_URL}/add-product`,
 };

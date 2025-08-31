@@ -1,3 +1,4 @@
+import { Register } from '@/service/login/RegisterService';
 import { Picker } from '@react-native-picker/picker';
 import React, { useState } from 'react';
 import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -5,8 +6,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function CreateAccView() {
-    const [role, setRole] = useState('');
+    const [role, setRole] = useState('Kalana');
+    const [email, setEmail] = useState('kalana@gmail.com');
+    const [password, setPassword] = useState('123');
+    const [userName, setUserName] = useState('Customer');
     const [isChecked, setIsChecked] = useState(false);
+
+    const handleRegister = async () => {
+        const result = await Register(role, email, password, userName);
+        if (result.responseMessage === "error") {
+            console.error("Registration failed:", result.responseCode);
+        } else {
+            console.log("Registration success:", result.responseMessage);
+        }
+    }
     return (
         // <ImageBackground
         //     source={require("../../assets/green-tea-bud-leaves-green-tea-plantations-morning.jpg")}
@@ -14,81 +27,83 @@ export default function CreateAccView() {
         //     resizeMode="cover"
         // >
 
-            <SafeAreaView style={styles.mainWrapper}>
-                <KeyboardAvoidingView
-                    style={{ flex: 1 }}
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                >
-                    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                        <View style={styles.customeHeaderFlex}>
-                            <Text>Back</Text>
-                            <Text style={styles.firstHeaderCusText}>Create an Account👏</Text>
-                            <Text style={styles.seccondHeaderCusText}>This is #Govi Mithuru Mobile App</Text>
+        <SafeAreaView style={styles.mainWrapper}>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    <View style={styles.customeHeaderFlex}>
+                        <Text>Back</Text>
+                        <Text style={styles.firstHeaderCusText}>Create an Account👏</Text>
+                        <Text style={styles.seccondHeaderCusText}>This is #Govi Mithuru Mobile App</Text>
+                    </View>
+
+                    <View style={styles.customeBodyFlex}>
+                        <Text>What is your Role?</Text>
+                        <View style={styles.pickerWrapper}>
+                            <Picker
+                                selectedValue={role}
+                                onValueChange={(itemValue) => setRole(itemValue)}
+                                style={styles.picker}
+                            >
+                                <Picker.Item label="Farmer" value="farmer" />
+                                <Picker.Item label="Supplier" value="supplier" />
+                                <Picker.Item label="Customer" value="customer" />
+                            </Picker>
                         </View>
 
-                        <View style={styles.customeBodyFlex}>
-                            <Text>What is your Role?</Text>
-                            <View style={styles.pickerWrapper}>
-                                <Picker
-                                    selectedValue={role}
-                                    onValueChange={(itemValue) => setRole(itemValue)}
-                                    style={styles.picker}
-                                >
-                                    <Picker.Item label="Farmer" value="farmer" />
-                                    <Picker.Item label="Supplier" value="supplier" />
-                                    <Picker.Item label="Customer" value="customer" />
-                                </Picker>
-                            </View>
+                        <Text>User Name</Text>
+                        <TextInput style={styles.customTextFiled} placeholder='Hello@email.com' />
 
-                            <Text>User Name</Text>
-                            <TextInput style={styles.customTextFiled} placeholder='Hello@email.com' />
+                        <Text>Email Address</Text>
+                        <TextInput style={styles.customTextFiled} placeholder='Hello@email.com' />
 
-                            <Text>Email Address</Text>
-                            <TextInput style={styles.customTextFiled} placeholder='Hello@email.com' />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+                            <Text>Password</Text>
+                        </View>
+                        <TextInput style={styles.customTextFiled} placeholder='Enter your password' secureTextEntry={true} />
+                        <Text>Confirm Password</Text>
+                        <TextInput style={styles.customTextFiled} placeholder='Enter your password' secureTextEntry={true} />
 
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-                                <Text>Password</Text>
-                            </View>
-                            <TextInput style={styles.customTextFiled} placeholder='Enter your password' secureTextEntry={true} />
-                            <Text>Confirm Password</Text>
-                            <TextInput style={styles.customTextFiled} placeholder='Enter your password' secureTextEntry={true} />
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                            <Switch
+                                value={isChecked}
+                                onValueChange={setIsChecked}
+                                thumbColor={isChecked ? "green" : "grey"}
+                            />
+                            <Text>Please correct all details terms of services</Text>
+                        </View>
 
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                                <Switch
-                                    value={isChecked}
-                                    onValueChange={setIsChecked}
-                                    thumbColor={isChecked ? "green" : "grey"}
+                        <TouchableOpacity style={styles.customButton}
+                            onPress={()=>{handleRegister()}}
+                        >
+                            <Text style={styles.customLoginBtn}>Create Account</Text>
+                        </TouchableOpacity>
+
+                        <View style={{ marginTop: 10, alignItems: 'center' }}>
+                            <Text>Sign in or Login</Text>
+                        </View>
+
+                        <TouchableOpacity style={styles.customButton}>
+                            <View style={styles.customButtonSubWrapper}>
+                                <Image
+                                    style={styles.iconImage}
+                                    source={require('../../assets/icon/google.png')}
                                 />
-                                <Text>Please correct all details terms of services</Text>
+                                <Text style={styles.customButtonText}>Sign in With Google</Text>
                             </View>
+                        </TouchableOpacity>
+                    </View>
 
-                            <TouchableOpacity style={styles.customButton}>
-                                <Text style={styles.customLoginBtn}>Create Account</Text>
-                            </TouchableOpacity>
-
-                            <View style={{ marginTop: 10, alignItems: 'center' }}>
-                                <Text>Sign in or Login</Text>
-                            </View>
-
-                            <TouchableOpacity style={styles.customButton}>
-                                <View style={styles.customButtonSubWrapper}>
-                                    <Image
-                                        style={styles.iconImage}
-                                        source={require('../../assets/icon/google.png')}
-                                    />
-                                    <Text style={styles.customButtonText}>Sign in With Google</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={styles.customeFooterFlex}>
-                            <Text style={styles.customFooterSologon}>
-                                <Text style={styles.customFooterColorChange}>Powered By Ruvindu Dulmina</Text> v_0.0.1
-                            </Text>
-                        </View>
-                    </ScrollView>
-                </KeyboardAvoidingView>
-            </SafeAreaView>
+                    <View style={styles.customeFooterFlex}>
+                        <Text style={styles.customFooterSologon}>
+                            <Text style={styles.customFooterColorChange}>Powered By Ruvindu Dulmina</Text> v_0.0.1
+                        </Text>
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
         // </ImageBackground>
     );
 }

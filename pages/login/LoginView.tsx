@@ -1,3 +1,4 @@
+import { login } from "@/service/login/LoginService";
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
 import {
@@ -17,8 +18,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginView({ navigation }: any) {
   const [role, setRole] = useState<string>("farmer");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>("admin@gmail.com");
+  const [password, setPassword] = useState<string>("123");
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const sendLoginRequest = async () => {
@@ -27,10 +28,23 @@ export default function LoginView({ navigation }: any) {
       return;
     }
     try {
-      // const response = await loginAPI({ role, email, password });
-      // if (response.status === "success") { navigation.replace("CustomerDash"); }
-      // console.log({ role, email, password, isChecked });
-      // navigation.replace("CustomerDash");
+      const response = await login(email, password);
+      if (response.message === "User credential is correct"){
+        console.log(response.userRole);
+        switch (response.userRole) {
+          case "Admin":
+            console.log("Correct");
+            navigation.replace("AdminView");
+            break;
+          case "Customer":
+            navigation.replace("CustomerDash");
+            break;
+          default:
+            break;
+        }  
+      }else{
+        alert(response.message);
+      }
     } catch (error) {
       console.error(error);
       alert("Login failed!");
@@ -110,7 +124,7 @@ export default function LoginView({ navigation }: any) {
               {/* Login Button */}
               <TouchableOpacity
                 style={styles.customButton}
-                onPress={sendLoginRequest}
+                onPress={()=>{sendLoginRequest()}}
                 disabled={!email || !password}
               >
                 <Text style={styles.customLoginBtn}>Login</Text>
