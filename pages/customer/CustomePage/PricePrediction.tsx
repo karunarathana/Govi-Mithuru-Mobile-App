@@ -1,6 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
 import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,11 +14,25 @@ export default function PricePrediction() {
 
   const vegetables = ["Tomato", "Carrot", "Potato", "Cabbage"];
 
-  const handlePrediction = () => {
-    // TODO: Call backend API to get prediction
-    const randomPrice = Math.floor(Math.random() * 500) + 50;
-    setPredictedPrice(randomPrice);
+  const getPredictedPrice = async () => {
+    try {
+      const response = await axios.post(
+        "http://172.29.218.10:5000/predict",
+        {
+          commodity: selectedVegetable,
+          date: selectedDate.toISOString().split('T')[0] // "YYYY-MM-DD"
+        },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      console.log("API RESPONSE:", response.data);
+      setPredictedPrice(response.data.predicted_price);
+    } catch (error: any) {
+      console.log("AXIOS ERROR:", error);
+      console.log("AXIOS RESPONSE:", error.response);
+      alert(error.response?.data?.error || "API error");
+    }
   };
+
 
   return (
     <ScrollView style={styles.container}>
@@ -60,7 +75,7 @@ export default function PricePrediction() {
         </View>
 
         {/* Predict Button */}
-        <TouchableOpacity style={styles.button} onPress={handlePrediction}>
+        <TouchableOpacity style={styles.button} onPress={getPredictedPrice}>
           <Text style={styles.buttonText}>🔮 මිල අනාවැකි කරන්න</Text>
         </TouchableOpacity>
 
