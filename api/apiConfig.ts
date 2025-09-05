@@ -6,5 +6,7 @@ export const API_ENDPOINTS = {
   USERS: `${BASE_URL}/users`,
 
   CREATE_NEW_PRODUCT: `${BASE_URL}/add-product`,
-  GET_ALL_Product : `${BASE_URL}/view-product`
+  GET_ALL_Product: `${BASE_URL}/view-product`,
+  UPDATE_SINGLE_PRODUCT: `${BASE_URL}/update-product`,
+  DELETE_SINGLE_PRODUCT: `${BASE_URL}/delete-product`
 };

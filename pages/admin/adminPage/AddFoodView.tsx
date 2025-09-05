@@ -1,7 +1,7 @@
-import { addNewProduct } from "@/service/login/CreateFoodService";
+import { addNewProduct, deleteProduct, getAllProduct, updateProduct } from "@/service/login/CreateFoodService";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -14,79 +14,105 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// Define a Product type
+// Define Product type
 interface Product {
-  id: number;
-  name: string;
-  price: string;
-  category: string;
-  image: string | null;
+  productID: number;
+  productName: string;
+  productPrice: string;
+  productCategory: string;
+  placeImageData: string | null; // Base64 from DB
+  productCreateData: string;
+  others: string | null;
 }
 
-export default function AddFoodView(){
+export default function AddFoodView() {
   const [productName, setProductName] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [category, setCategory] = useState<string>("");
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(null); // Can be Base64 or URI
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
 
-  // Sample product list
-  const [products, setProducts] = useState<Product[]>([
-    { id: 1, name: "Apple", price: "250", category: "Fruits", image: null },
-    { id: 2, name: "Carrot", price: "180", category: "Vegetables", image: null },
-  ]);
+  // Fetch products from service
+  const handleProductView = async () => {
+    try {
+      const result = await getAllProduct();
+      if (result?.items) setProducts(result.items);
+    } catch (error) {
+      console.log("Error fetching products:", error);
+    }
+  };
 
-  // Pick Image
+  useEffect(() => {
+    console.log("Refresh");
+
+    handleProductView();
+  }, []);
+
+  // Pick Image (from gallery)
   const pickImage = async (): Promise<void> => {
     const res = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.9,
+      quality: 0.8,
+      base64: true, // Get Base64 to send to backend
     });
-    
+
     if (!res.canceled) {
-      setImage(res.assets[0].uri);
+      setImage(`data:image/jpeg;base64,${res.assets[0].base64}`);
     }
   };
 
   const productDto = {
-    productName: productName,
+    productName,
     productPrice: price,
     productCategory: category,
   };
 
   // Save or Update Product
   const handleSubmit = async (): Promise<void> => {
-
-    console.log("Clivk");
-    
     if (!productName || !price || !category) {
       Alert.alert("⚠️ Please fill all fields!");
       return;
     }
 
     if (editingId) {
-      // Update
+      // Update existing product locally
       setProducts((prev) =>
         prev.map((p) =>
-          p.id === editingId ? { ...p, name: productName, price, category, image } : p
+          p.productID === editingId
+            ? { ...p, productName, productPrice: price, productCategory: category, placeImageData: image }
+            : p
         )
       );
+      console.log(editingId);
+      const result = await updateProduct(editingId, image, productDto);
       setEditingId(null);
+      console.log(result);
+      handleProductView();
+
       Alert.alert("✏️ Product Updated!");
     } else {
-      // Add
-       const response = await addNewProduct(image,productDto);
-      const newProduct: Product = {
-        id: Date.now(),
-        name: productName,
-        price,
-        category,
-        image,
-      };
-      setProducts([...products, newProduct]);
-      Alert.alert("✅ Product Added!");
+      // Add new product
+      try {
+        await addNewProduct(image, productDto); // Send Base64 image
+        const newProduct: Product = {
+          productID: Date.now(),
+          productName,
+          productPrice: price,
+          productCategory: category,
+          placeImageData: image,
+          productCreateData: new Date().toISOString(),
+          others: null,
+        };
+        setProducts([...products, newProduct]);
+        Alert.alert("✅ Product Added!");
+        handleProductView();
+      } catch (error) {
+        console.log("Error adding product:", error);
+        Alert.alert("❌ Failed to add product");
+      }
     }
 
     // Reset form
@@ -96,24 +122,33 @@ export default function AddFoodView(){
     setImage(null);
   };
 
-  // Edit Product
-  const handleEdit = (product: Product): void => {
-    setEditingId(product.id);
-    setProductName(product.name);
-    setPrice(product.price);
-    setCategory(product.category);
-    setImage(product.image);
+  // Edit product
+  const handleEdit = (product: Product) => {
+    setEditingId(product.productID);
+    setProductName(product.productName);
+    setPrice(product.productPrice);
+    setCategory(product.productCategory);
+
+    // Ensure Base64 prefix for DB image
+    if (product.placeImageData && !product.placeImageData.startsWith("data:image")) {
+      setImage(`data:image/jpeg;base64,${product.placeImageData}`);
+    } else {
+      setImage(product.placeImageData);
+    }
+
   };
 
-  // Delete Product
-  const handleDelete = (id: number): void => {
+  // Delete product
+  const handleDelete = (id: number) => {
     Alert.alert("Confirm Delete", "Are you sure?", [
       { text: "Cancel" },
       {
         text: "Delete",
         onPress: () => {
-          setProducts(products.filter((p) => p.id !== id));
+          deleteProduct(id);
+          setProducts(products.filter((p) => p.productID !== id));
           Alert.alert("🗑️ Product Deleted!");
+          handleProductView();
         },
       },
     ]);
@@ -121,10 +156,8 @@ export default function AddFoodView(){
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F9F9F9" }}>
-      <ScrollView style={styles.container}>
-        <Text style={styles.title}>
-          {editingId ? "✏️ Edit Product" : "➕ Add New Product"}
-        </Text>
+      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
+        <Text style={styles.title}>{editingId ? "✏️ Edit Product" : "➕ Add New Product"}</Text>
 
         {/* Product Name */}
         <View style={styles.inputContainer}>
@@ -162,11 +195,7 @@ export default function AddFoodView(){
 
         {/* Upload Image */}
         <TouchableOpacity style={styles.imageUpload} onPress={pickImage}>
-          {image ? (
-            <Image source={{ uri: image }} style={styles.image} />
-          ) : (
-            <Text style={styles.uploadText}>📷 Upload Product Image</Text>
-          )}
+          {image ? <Image source={{ uri: image }} style={styles.image} /> : <Text style={styles.uploadText}>📷 Upload Product Image</Text>}
         </TouchableOpacity>
 
         {/* Save Button */}
@@ -177,30 +206,36 @@ export default function AddFoodView(){
 
         {/* Product List */}
         <Text style={styles.subtitle}>📦 Product List</Text>
-        {products.map((product) => (
-          <View key={product.id} style={styles.card}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {product.image ? (
-                <Image source={{ uri: product.image }} style={styles.cardImage} />
-              ) : (
-                <Ionicons name="image" size={50} color="gray" />
-              )}
-              <View style={{ marginLeft: 10 }}>
-                <Text style={styles.cardTitle}>{product.name}</Text>
-                <Text style={styles.cardText}>💰 {product.price} LKR / KG</Text>
-                <Text style={styles.cardText}>📂 {product.category}</Text>
+        <ScrollView
+          style={{ height: 170 }}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          showsVerticalScrollIndicator={true}
+        >
+          {products.map((product) => (
+            <View key={product.productID} style={styles.card}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {product.placeImageData ? (
+                  <Image source={{ uri: `data:image/jpeg;base64,${product.placeImageData}` }} style={styles.cardImage} />
+                ) : (
+                  <Ionicons name="image" size={50} color="gray" />
+                )}
+                <View style={{ marginLeft: 10 }}>
+                  <Text style={styles.cardTitle}>{product.productName}</Text>
+                  <Text style={styles.cardText}>💰 {product.productPrice} LKR / KG</Text>
+                  <Text style={styles.cardText}>📂 {product.productCategory}</Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity style={{ marginRight: 15 }} onPress={() => handleEdit(product)}>
+                  <Ionicons name="create" size={24} color="blue" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleDelete(product.productID)}>
+                  <Ionicons name="trash" size={24} color="red" />
+                </TouchableOpacity>
               </View>
             </View>
-            <View style={styles.cardActions}>
-              <TouchableOpacity onPress={() => handleEdit(product)}>
-                <Ionicons name="create" size={24} color="blue" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleDelete(product.id)}>
-                <Ionicons name="trash" size={24} color="red" />
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
+          ))}
+        </ScrollView>
       </ScrollView>
     </SafeAreaView>
   );
@@ -260,7 +295,4 @@ const styles = StyleSheet.create({
   cardImage: { width: 60, height: 60, borderRadius: 8 },
   cardTitle: { fontSize: 16, fontWeight: "bold", color: "#333" },
   cardText: { fontSize: 14, color: "#666" },
-  cardActions: { flexDirection: "row", gap: 15 },
 });
-
-

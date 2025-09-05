@@ -48,7 +48,7 @@ export default function AdminDashboard() {
                          let iconName = "home-outline";
  
                          if (route.name === "Home") iconName = "home-outline";
-                         else if (route.name === "Profile") iconName = "person-outline";
+                         else if (route.name === "Profile") iconName = "pricetag-outline";
                          else if (route.name === "Settings") iconName = "settings-outline";
                          else if (route.name === "Mail") iconName = "mail-outline";
  
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
                  })}
              >
                  <Tab.Screen name="Home" component={HomeScreen} />
-                 <Tab.Screen name="Predit" component={ProfileScreen} />
+                 <Tab.Screen name="Product" component={ProfileScreen} />
                  <Tab.Screen name="Mail" component={MailScreen} />
                  <Tab.Screen name="Settings" component={SettingsScreen} />
              </Tab.Navigator>
