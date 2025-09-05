@@ -1,5 +1,6 @@
+import { getAllProduct, Product } from '@/service/login/CreateFoodService';
 import { Feather } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Catagories from '../components/Catagories';
@@ -7,6 +8,21 @@ import Foods from '../components/Foods';
 
 export default function CustomerHome() {
   const [searchText, setSearchText] = useState("");
+  const [products, setProducts] = useState<Product[]>([]);
+
+
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      console.log("Working");
+
+      const products = await getAllProduct();
+      setProducts(products?.items ?? []);
+
+    };
+
+    fetchProducts();
+  }, [])
   return (
     <>
       <View style={{ flex: 1, margin: 10 }}>
@@ -66,14 +82,19 @@ export default function CustomerHome() {
             <View>
               <ScrollView
                 horizontal
-                showsHorizontalScrollIndicator={false} // hide scrollbar
+                showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.scrollContent}
               >
-                <Foods />
-                <Foods />
-                <Foods />
-                <Foods />
+                {products.map((product) => (
+                  <Foods
+                    key={product.productID}
+                    productName={product.productName}
+                    productPrice={product.productPrice}
+                    productImage={product.placeImageData}
+                  />
+                ))}
               </ScrollView>
+
             </View>
           </View>
         </SafeAreaView>

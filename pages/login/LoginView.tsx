@@ -1,4 +1,4 @@
-import { Picker } from "@react-native-picker/picker";
+import { login } from "@/service/login/LoginService";
 import React, { useState } from "react";
 import {
   Image,
@@ -16,21 +16,37 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginView({ navigation }: any) {
-  const [role, setRole] = useState<string>("farmer");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const sendLoginRequest = async () => {
+    console.log(email, password);
+
     if (!email || !password) {
       alert("Please enter email and password!");
       return;
     }
     try {
-      // const response = await loginAPI({ role, email, password });
-      // if (response.status === "success") { navigation.replace("CustomerDash"); }
-      // console.log({ role, email, password, isChecked });
-      // navigation.replace("CustomerDash");
+      const response = await login(email, password);
+      console.log(response);
+      
+      if (response.message === "User credential is correct") {
+        console.log(response.userRole);
+        switch (response.userRole) {
+          case "Admin":
+            console.log("Correct");
+            navigation.replace("AdminView");
+            break;
+          case "Farmer":
+            navigation.replace("CustomerDash");
+            break;
+          default:
+            break;
+        }
+      } else {
+        alert(response.message);
+      }
     } catch (error) {
       console.error(error);
       alert("Login failed!");
@@ -55,29 +71,18 @@ export default function LoginView({ navigation }: any) {
                 source={require('../../assets/previous.png')} />
               <Text style={styles.firstHeaderCusText}>Welcome Back 👏</Text>
               <Text style={styles.seccondHeaderCusText}>
-                This is #Govi Mithuru Mobile App
+                This is #Agro Link Mobile App
               </Text>
             </View>
 
             {/* Body */}
             <View style={styles.customeBodyFlex}>
-              <Text>What is your Role?</Text>
-              <View style={styles.pickerWrapper}>
-                <Picker
-                  selectedValue={role}
-                  onValueChange={(itemValue: string) => setRole(itemValue)}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Farmer" value="farmer" />
-                  <Picker.Item label="Supplier" value="supplier" />
-                  <Picker.Item label="Customer" value="customer" />
-                </Picker>
-              </View>
 
-              <Text>Email Address</Text>
+              <Text style={{ color: 'white' }}>Email Address</Text>
               <TextInput
                 style={styles.customTextFiled}
                 placeholder="Hello@email.com"
+                placeholderTextColor="#FFFFFF"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -86,12 +91,13 @@ export default function LoginView({ navigation }: any) {
               <View
                 style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}
               >
-                <Text>Password</Text>
-                <Text>Forgot Password?</Text>
+                <Text style={{ color: 'white' }}>Password</Text>
+                <Text style={{ color: 'white' }}>Forgot Password?</Text>
               </View>
               <TextInput
                 style={styles.customTextFiled}
                 placeholder="Enter your password"
+                placeholderTextColor="#FFFFFF"
                 secureTextEntry={true}
                 value={password}
                 onChangeText={setPassword}
@@ -101,25 +107,33 @@ export default function LoginView({ navigation }: any) {
                 <Switch
                   value={isChecked}
                   onValueChange={setIsChecked}
-                  thumbColor={isChecked ? "green" : "grey"}
+                  thumbColor={isChecked ? "green" : "white"}
                   trackColor={{ false: "#ccc", true: "#a0ffa0" }}
                 />
-                <Text>Keep me signed in</Text>
+                <Text style={{ color: 'white' }}>Keep me signed in</Text>
               </View>
 
               {/* Login Button */}
               <TouchableOpacity
                 style={styles.customButton}
-                onPress={sendLoginRequest}
+                onPress={() => { sendLoginRequest() }}
                 disabled={!email || !password}
               >
                 <Text style={styles.customLoginBtn}>Login</Text>
               </TouchableOpacity>
 
               {/* Social Login */}
-              <View style={{ marginTop: 10, alignItems: "center" }}>
-                <Text>Or Sign in with</Text>
+              <View style={{
+                marginTop: 10,
+                alignItems: 'center',
+                flexDirection: 'row',
+                justifyContent: 'center'
+              }}>
+                <View style={{ flex: 1, height: 1, backgroundColor: 'white', marginHorizontal: 10 }} />
+                <Text style={{ color: 'white', fontWeight: '600' }}>Sign in or Login</Text>
+                <View style={{ flex: 1, height: 1, backgroundColor: 'white', marginHorizontal: 10 }} />
               </View>
+
 
               <TouchableOpacity style={styles.customButton}
                 onPress={() => navigation.navigate("CreateAccount")}
@@ -127,7 +141,7 @@ export default function LoginView({ navigation }: any) {
                 <View style={styles.customButtonSubWrapper}>
                   <Image
                     style={styles.iconImage}
-                    source={require("../../assets/icon/farmer.png")}
+                    source={require("../../assets/icon/google.png")}
                   />
                   <Text style={styles.customButtonText}>Sign in With Google</Text>
                 </View>
@@ -136,8 +150,10 @@ export default function LoginView({ navigation }: any) {
 
             {/* Footer */}
             <View style={styles.customeFooterFlex}>
-              <Text style={styles.customFooterSologon}>
-                <Text style={styles.customFooterColorChange}>Powered By Ruvindu Dulmina</Text> v_0.0.1
+              <Text style={styles.customFooterSologon}
+                onPress={() => { navigation.navigate("CreateAccount") }}
+              >
+                <Text style={styles.customFooterColorChange}>Powered By Ruvindu Dulmina</Text> _create An Account
               </Text>
             </View>
           </ScrollView>
@@ -149,21 +165,21 @@ export default function LoginView({ navigation }: any) {
 
 const styles = StyleSheet.create({
   mainWrapper: { flex: 1, padding: 10, justifyContent: "space-between" },
-  firstHeaderCusText: { fontSize: 32, fontWeight: "bold", color: "black" },
-  seccondHeaderCusText: { fontSize: 13, fontWeight: "bold", color: "grey" },
+  firstHeaderCusText: { fontSize: 32, fontWeight: "bold", color: "white" },
+  seccondHeaderCusText: { fontSize: 13, fontWeight: "bold", color: "white" },
   iconImage: { width: 40, height: 40, resizeMode: "contain" },
   customButtonSubWrapper: { flexDirection: "row", justifyContent: "center", alignItems: "center", width: "60%", padding: 5 },
-  customButton: { flexDirection: "row", justifyContent: "center", alignItems: "center", height: 60, borderRadius: 30, borderWidth: 2, borderColor: "grey", marginTop: 10 },
-  customButtonText: { fontSize: 16, fontWeight: "bold", color: "grey", marginLeft: 10 },
-  customLoginBtn: { fontSize: 19, fontWeight: "bold", color: "grey" },
+  customButton: { flexDirection: "row", justifyContent: "center", alignItems: "center", height: 60, borderRadius: 30, borderWidth: 2, borderColor: "white", marginTop: 10 },
+  customButtonText: { fontSize: 16, fontWeight: "bold", color: "white", marginLeft: 10 },
+  customLoginBtn: { fontSize: 19, fontWeight: "bold", color: "white" },
   customeHeaderFlex: { flex: 0.15, justifyContent: "center" },
-  customeBodyFlex: { flex: 0.7, justifyContent: "center" },
+  customeBodyFlex: { flex: 0.7, marginTop: 50 },
   customeFooterFlex: { flex: 0.15, justifyContent: "flex-end", alignItems: "center" },
-  customTextFiled: { padding: 10, height: 55, borderRadius: 10, borderWidth: 2, borderColor: "grey", marginTop: 5, marginBottom: 10 },
-  pickerWrapper: { borderWidth: 2, borderColor: "grey", borderRadius: 10, overflow: "hidden", marginBottom: 10 },
+  customTextFiled: { padding: 10, height: 55, borderRadius: 10, borderWidth: 2, borderColor: "white", marginTop: 5, marginBottom: 10 },
+  pickerWrapper: { borderWidth: 2, borderColor: "white", borderRadius: 10, overflow: "hidden", marginBottom: 10 },
   picker: { height: 50, width: "100%" },
-  customFooterSologon: { fontSize: 15, fontWeight: "bold", color: "grey", textAlign: "center" },
-  customFooterColorChange: { color: "green" },
+  customFooterSologon: { fontSize: 15, fontWeight: "bold", color: "white", textAlign: "center" },
+  customFooterColorChange: { color: "black" },
   background: { flex: 1 },
   backImage: {
     width: 30,

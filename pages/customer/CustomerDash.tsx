@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import ChatScreen from "./CustomePage/ChatScreen";
 import CustomerHome from "./CustomePage/CustomerHome";
 import CustomerProfile from "./CustomePage/CustomerProfile";
+import PricePrediction from "./CustomePage/PricePrediction";
 
 export default function CustomerDash() {
     const Tab = createBottomTabNavigator();
@@ -30,9 +30,7 @@ export default function CustomerDash() {
 
     function MailScreen() {
         return (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ fontSize: 20 }}>📧 Mail Screen</Text>
-            </View>
+            <PricePrediction/>
         );
     }
 

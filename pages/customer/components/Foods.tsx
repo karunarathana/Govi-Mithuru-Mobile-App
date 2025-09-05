@@ -1,15 +1,15 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
-export default function Foods() {
+export default function Foods(props:any) {
     return (
         <>
             <View style={styles.mainWrapperFoods}>
                 <View>
-                    <Image style={{ width: 90, height: 90 }} source={require('../../../assets/foods/Tomato.jpeg')} />
+                    <Image style={{ width: 90, height: 90 }}  source={{ uri: `data:image/jpeg;base64,${props.productImage}` }} />
                 </View>
-                <Text>Berries</Text>
-                <Text>Rs.500(1KG)</Text>
+                <Text>{props.productName}</Text>
+                <Text>Rs.{props.productPrice}(1KG)</Text>
             </View>
         </>
     )

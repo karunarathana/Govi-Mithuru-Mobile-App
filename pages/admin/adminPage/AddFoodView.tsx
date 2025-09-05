@@ -1,3 +1,4 @@
+import { addNewProduct } from "@/service/login/CreateFoodService";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
@@ -49,8 +50,17 @@ export default function AddFoodView(){
     }
   };
 
+  const productDto = {
+    productName: productName,
+    productPrice: price,
+    productCategory: category,
+  };
+
   // Save or Update Product
-  const handleSubmit = (): void => {
+  const handleSubmit = async (): Promise<void> => {
+
+    console.log("Clivk");
+    
     if (!productName || !price || !category) {
       Alert.alert("⚠️ Please fill all fields!");
       return;
@@ -67,6 +77,7 @@ export default function AddFoodView(){
       Alert.alert("✏️ Product Updated!");
     } else {
       // Add
+       const response = await addNewProduct(image,productDto);
       const newProduct: Product = {
         id: Date.now(),
         name: productName,
@@ -251,3 +262,5 @@ const styles = StyleSheet.create({
   cardText: { fontSize: 14, color: "#666" },
   cardActions: { flexDirection: "row", gap: 15 },
 });
+
+
