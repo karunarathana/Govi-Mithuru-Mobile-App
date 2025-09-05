@@ -1,4 +1,4 @@
-const BASE_URL = "http://172.29.218.10:8082/api/com-test";
+const BASE_URL = "http://192.168.8.103:8082/api/com-test";
 
 export const API_ENDPOINTS = {
   LOGIN: `${BASE_URL}/login-user`,

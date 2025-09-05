@@ -7,21 +7,21 @@ export interface SimpleResponse {
 }
 
 export const Register = async (
-  userRole: string,
   userEmail: string,
   userPassword: string,
   profileName:string
 ): Promise<SimpleResponse> => {
   try {
-    console.log("UserRole ",userRole);
-    
+    console.log("*************************");
+    console.log("Register Function Called");
+    console.log("*************************");
     const response = await axios.post<SimpleResponse>(
       API_ENDPOINTS.REGISTER,
       {
         userName: profileName,
         userEmail: userEmail,
         password: userPassword,
-        role:userRole
+        role:'Farmer'
       },
       {
         headers: {

@@ -25,18 +25,13 @@ export default function SelectRoleView({ navigation }: any) {
                                 <Text style={styles.customButtonText}>Farmer</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.customButton}>
-                            <View style={styles.customButtonSubWrapper}>
-                                <Image style={styles.iconImage}
-                                    source={require('../../assets/icon/employee.png')} />
-                                <Text style={styles.customButtonText}>Economic Officer</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.customButton}>
+                        <TouchableOpacity style={styles.customButton}
+                         onPress={() => navigation.navigate("LoginView")}
+                         >
                             <View style={styles.customButtonSubWrapper}>
                                 <Image style={styles.iconImage}
                                     source={require('../../assets/icon/admin.png')} />
-                                <Text style={styles.customButtonText}>Supper Admin</Text>
+                                <Text style={styles.customButtonText}>Admin</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -58,6 +53,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     firstHeaderCusText: {
+        marginTop:10,
         fontSize: 29,
         fontWeight: 'bold',
         color: 'black',
@@ -110,7 +106,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         flexDirection: 'column',
         gap: '10',
-        justifyContent: 'space-between'
+    
     },
     subWrapperRoleView: {
         height: "100%",
