@@ -11,7 +11,7 @@ import React from 'react';
 export default function HomeScreen() {
   const Stack = createNativeStackNavigator();
   return (
-      <Stack.Navigator initialRouteName='AdminView' screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName='welcomeView' screenOptions={{ headerShown: false }}>
         <Stack.Screen name="welcomeView" component={WelcomView} />
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen name="CustomerDash" component={CustomerDash} />

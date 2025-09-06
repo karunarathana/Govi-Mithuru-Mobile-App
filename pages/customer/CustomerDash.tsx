@@ -17,20 +17,20 @@ export default function CustomerDash() {
     function ProfileScreen() {
         return (
             <>
-            <CustomerProfile/>
+            <PricePrediction/>
             </>
         );
     }
 
     function SettingsScreen() {
         return (
-            <ChatScreen/>
+            <CustomerProfile/>
         );
     }
 
     function MailScreen() {
         return (
-            <PricePrediction/>
+           <ChatScreen/>
         );
     }
 

@@ -85,31 +85,6 @@ export default function AdminHome() {
             </View>
           )}
         />
-
-        {/* Officers Section */}
-        <Text style={styles.sectionTitle}>👨‍💼 Economic Officers</Text>
-        {officers.map((officer) => (
-          <View key={officer.id} style={styles.officerCard}>
-            <Icon name="account-tie" size={26} color="#FF9800" />
-            <View style={{ marginLeft: 10, flex: 1 }}>
-              <Text style={styles.officerName}>{officer.name}</Text>
-              <Text style={styles.officerRole}>{officer.role}</Text>
-            </View>
-            <Text style={styles.officerPhone}>{officer.phone}</Text>
-          </View>
-        ))}
-
-        {/* Messages Section */}
-        <Text style={styles.sectionTitle}>📩 Recent Messages</Text>
-        {messages.map((msg) => (
-          <View key={msg.id} style={styles.messageCard}>
-            <Icon name="message-text" size={24} color="#2196F3" />
-            <View style={{ marginLeft: 10 }}>
-              <Text style={styles.messageUser}>{msg.user}</Text>
-              <Text style={styles.messageText}>{msg.text}</Text>
-            </View>
-          </View>
-        ))}
       </SafeAreaView>
     </ScrollView>
   );

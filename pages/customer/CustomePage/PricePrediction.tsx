@@ -12,27 +12,28 @@ export default function PricePrediction() {
   const [selectedVegetable, setSelectedVegetable] = useState("");
   const [predictedPrice, setPredictedPrice] = useState<number | null>(null);
 
-  const vegetables = ["Tomato", "Carrot", "Potato", "Cabbage"];
+  // 🔹 Make sure names match CSV exactly
+  const vegetables = ["Tomato Big(Nepali)", "Carrot", "Potato", "Cabbage"];
 
   const getPredictedPrice = async () => {
+    console.log("Calling API...");
+    if (!selectedVegetable) {
+      alert("කරුණාකර එළවළු වර්ගය තෝරන්න!");
+      return;
+    }
+
     try {
       const response = await axios.post(
-        "http://172.29.218.10:5000/predict",
-        {
-          commodity: selectedVegetable,
-          date: selectedDate.toISOString().split('T')[0] // "YYYY-MM-DD"
-        },
-        { headers: { "Content-Type": "application/json" } }
+        "http://192.168.8.103:5000/predict",
+        { commodity: selectedVegetable, date: selectedDate.toISOString().split('T')[0] },
       );
       console.log("API RESPONSE:", response.data);
       setPredictedPrice(response.data.predicted_price);
     } catch (error: any) {
-      console.log("AXIOS ERROR:", error);
-      console.log("AXIOS RESPONSE:", error.response);
-      alert(error.response?.data?.error || "API error");
+      console.log("AXIOS ERROR:", error.message);
+      alert(error.response?.data?.error || error.message || "API error");
     }
   };
-
 
   return (
     <ScrollView style={styles.container}>
@@ -93,84 +94,15 @@ export default function PricePrediction() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f0f4f8",
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 30,
-    color: "#2E7D32",
-  },
-  input: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "#cce5cc",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  inputText: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: "#333",
-  },
-  picker: {
-    flex: 1,
-  },
-  button: {
-    backgroundColor: "#4CAF50",
-    paddingVertical: 15,
-    borderRadius: 12,
-    alignItems: "center",
-    marginVertical: 15,
-    shadowColor: "#4CAF50",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 5,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 18,
-  },
-  resultCard: {
-    marginTop: 25,
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 25,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  resultTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#4CAF50",
-    marginBottom: 10,
-  },
-  resultPrice: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#1B5E20",
-    marginBottom: 10,
-  },
-  resultDate: {
-    fontSize: 14,
-    color: "#666",
-  },
+  container: { flex: 1, padding: 20, backgroundColor: "#f0f4f8" },
+  title: { fontSize: 26, fontWeight: "bold", textAlign: "center", marginBottom: 30, color: "#2E7D32" },
+  input: { flexDirection: "row", alignItems: "center", backgroundColor: "#fff", padding: 12, borderRadius: 12, marginBottom: 20, borderWidth: 1, borderColor: "#cce5cc", shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.1, shadowRadius: 5, elevation: 3 },
+  inputText: { marginLeft: 10, fontSize: 16, color: "#333" },
+  picker: { flex: 1 },
+  button: { backgroundColor: "#4CAF50", paddingVertical: 15, borderRadius: 12, alignItems: "center", marginVertical: 15, shadowColor: "#4CAF50", shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.3, shadowRadius: 6, elevation: 5 },
+  buttonText: { color: "#fff", fontWeight: "bold", fontSize: 18 },
+  resultCard: { marginTop: 25, backgroundColor: "#ffffff", borderRadius: 16, padding: 25, alignItems: "center", shadowColor: "#000", shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.1, shadowRadius: 10, elevation: 5 },
+  resultTitle: { fontSize: 18, fontWeight: "600", color: "#4CAF50", marginBottom: 10 },
+  resultPrice: { fontSize: 28, fontWeight: "bold", color: "#1B5E20", marginBottom: 10 },
+  resultDate: { fontSize: 14, color: "#666" },
 });
