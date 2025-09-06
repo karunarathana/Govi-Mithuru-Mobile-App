@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AddFoodView from "./adminPage/AddFoodView";
 import AdminHome from "./adminPage/AdminHome";
-import MembersMessaging from "./adminPage/MembersMessaging";
+import AdminMessageView from "./adminPage/AdminMessageView";
+import AdminProfile from "./adminPage/AdminProfile";
 
 export default function AdminDashboard() {
   const Tab = createBottomTabNavigator();
@@ -27,16 +27,14 @@ export default function AdminDashboard() {
      function SettingsScreen() {
          return (
             <>
-            <MembersMessaging/>
+            <AdminProfile/>
             </>
          );
      }
  
      function MailScreen() {
          return (
-             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                 <Text style={{ fontSize: 20 }}>📧 Mail Screen</Text>
-             </View>
+            <AdminMessageView/>
          );
      }
  
